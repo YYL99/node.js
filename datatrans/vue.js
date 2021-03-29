@@ -1,0 +1,6 @@
+export const setSession = (key, val) => sessionStorage.setItem(key, val)
+export const getSession = key => sessionStorage.getItem(key)
+export const clearSession = () => sessionStorage.clear()
+export const setStorage = (key, val) => localStorage.setItem(key, val)
+export const getStorage = key => localStorage.getItem(key)
+export const clearStorage = () => localStorage.clear()

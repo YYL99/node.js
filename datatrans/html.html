@@ -1,0 +1,70 @@
+<script src="https://cdn.bootcss.com/vue/2.6.11/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+//md5在线引入
+<script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.js"></script
+Vue.config.productionTip = false
+	
+       // 每次请求都要将token放在headers里传到后台
+       // 这里通过文档进行了封装
+       var instance = axios.create({
+           baseURL: 'http://xxx.0.0.1:8888'
+       });
+
+       let $get = function (url) {
+           // 在实例已创建后修改默认值
+           instance.defaults.headers.common['token'] = localStorage.getItem('token') || '';
+           return instance.get(url)
+       }
+       let $post = function (url,data) {
+           // 在实例已创建后修改默认值
+           instance.defaults.headers.common['token'] = localStorage.getItem('token') || '';
+           return instance.post(url,data)
+       }
+
+
+       // console.log(md5('123456'))
+       function reverseStr(str) {
+           //将md5加密再进行一次翻转
+           return str.split('').reverse().join('')
+       }
+
+       function fmtPwd(password) {
+           //嵌套两层md5加密以及翻转
+           return md5(reverseStr(md5(reverseStr(password))))
+       }
+       const mv = new Vue({
+           el: "#app",
+           data() {
+               return {
+                   username: '',
+                   password: "",
+                   list: []
+               }
+           },
+           methods: {
+               async login() {
+                   let {
+                       data
+                   } = await $post('/login', {
+                       //登录将用户名 以及md5加密后的秘密传到后台
+                       username: this.username,
+                       password: fmtPwd(this.password)
+                   })
+                   if (data.isSuccess) {
+                       //登录成功后，将token 令牌保存到本地的storage里
+                       alert("登录成功")
+                       localStorage.setItem('token', data.token)
+                   } else {
+                       alert("登录失败")
+                   }
+               },
+               // 获取数据
+               async getlist() {
+                   let {
+                       data
+                   } = await $get('/list2')
+                   this.list = data
+               }
+           },
+       })
+
