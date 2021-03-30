@@ -30,7 +30,8 @@ console.log(desDecryptCipheriv(content, secret));
 */
 const crypto = require("crypto");
  
-const secret = crypto.randomBytes(32); // 密钥
+//const secret = crypto.randomBytes(32); // 密钥
+const secret = "I".repeat(32);
 const content = "hello world!"; // 要加密的明文
  
 const cipher = crypto.createCipheriv(
@@ -49,5 +50,6 @@ const decipher = crypto.createDecipheriv(
     secret1,
     Buffer.alloc(16, 0)
 );
-decipher.update("a061e67f5643d948418fdb150745f24d", "hex");
+//decipher.update("a061e67f5643d948418fdb150745f24d", "hex");
+decipher.update(miwen, "hex");
 console.log(decipher.final("utf8")); 
