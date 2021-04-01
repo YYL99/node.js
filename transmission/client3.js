@@ -13,8 +13,9 @@ const miwen = encodeData.toString("base64");
 
 const net = require('net');
 const port = 8080;
-const host = '127.0.0.1';
-//const host = '192.168.136.1';
+//const host = '127.0.0.1';
+//const host = '192.168.43.170';
+const host = '192.168.43.188';
 const client= new net.Socket();
 //创建socket客户端
 client.setEncoding('binary');
