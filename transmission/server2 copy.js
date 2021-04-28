@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const net = require('net');
 const listenPort = 8080;
 const server = net.createServer(function(socket){
@@ -6,8 +7,26 @@ const server = net.createServer(function(socket){
   socket.setEncoding('binary');
   socket.write('Hello client!');
   socket.on('data',function(data){
-    console.log('client send:' + data);
+    if (data == 'hello server'){
+      console.log('client send:' + data);
+    }
+    else if (data.length == 32){
+      const secret = data;
+    }
+    else{
+      const miwen = data;
+    }
   });
+  console.log('client send:' + miwen);
+  const decipher = crypto.createDecipheriv(
+    "aes-256-cbc",
+    secret,
+    Buffer.alloc(16, 0)
+  );
+  decipher.update(miwen, "hex");
+  const jiemi = decipher.final("utf8");
+  console.log('client send:' + jiemi);
+
   socket.on('error',function(exception){
     console.log('socket error:' + exception);
     socket.end();

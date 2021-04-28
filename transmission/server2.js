@@ -1,33 +1,38 @@
+const crypto = require("crypto");
+const secret = "O".repeat(32);
+const decipher = crypto.createDecipheriv(
+  "aes-256-cbc",
+  secret,
+  Buffer.alloc(16, 0)
+);
 const net = require('net');
-//模块引入
-const listenPort = 8080;//监听端口
+const listenPort = 8080;
 const server = net.createServer(function(socket){
-  // 创建socket服务端
   console.log('connect: ' +
     socket.remoteAddress + ':' + socket.remotePort);
   socket.setEncoding('binary');
   socket.write('Hello client!');
   socket.on('data',function(data){
-    console.log('client send:' + data);
+    if (data == 'hello server'){
+      console.log('client send:' + data);
+    }else{
+      console.log('client send:' + data);
+      decipher.update(data, "hex");
+      const jiemi = decipher.final("utf8");
+      console.log('client send:' + jiemi);
+    }
   });
-  
- // socket.pipe(socket);
-  //数据错误事件
   socket.on('error',function(exception){
     console.log('socket error:' + exception);
     socket.end();
   });
-  //客户端关闭事件
   socket.on('close',function(data){
     console.log('client closed!');
-     // socket.remoteAddress + ' ' + socket.remotePort);
   });
 }).listen(listenPort);
-//服务器监听事件
 server.on('listening',function(){
   console.log("server listening:" + server.address().port);
 });
-//服务器错误事件
 server.on("error",function(exception){
   console.log("server error:" + exception);
 });

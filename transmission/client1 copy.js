@@ -1,13 +1,13 @@
-/*# 生成私钥
-openssl genrsa -out privatekey.pem 1024
-*/
 const crypto = require("crypto");
 var fs = require('fs');
-const publicKey = fs.readFileSync("./publickey.pem");
 const content = fs.readFileSync('./file.txt', 'utf8');
 console.log(content);
-const encodeData = crypto.publicEncrypt(publicKey, Buffer.from(content));
-const miwen = encodeData.toString("base64");
+function sha1Sign(src) {
+    const sha1 = crypto.createHash('sha1');
+    sha1.update(src);
+    return sha1.digest('hex').toString();
+}
+const miwen = sha1Sign(content);
 console.log(miwen);
 const net = require('net');
 const port = 8080;
@@ -27,10 +27,8 @@ client.connect(port,host,function(){
 });
 client.on('error',function(error){
   console.log('error:'+error);
-  client.destory();
+  //client.destory();
 });
 client.on('close',function(){
   console.log('Connection closed');
 });
-
-

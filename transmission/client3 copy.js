@@ -1,9 +1,12 @@
 /*# 生成私钥
 openssl genrsa -out privatekey.pem 1024
+# 生成公钥
+openssl rsa -in privatekey.pem -pubout -out publickey.pem
 */
 const crypto = require("crypto");
 var fs = require('fs');
 const publicKey = fs.readFileSync("./publickey.pem");
+const privateKey = fs.readFileSync("./privatekey.pem");
 const content = fs.readFileSync('./file.txt', 'utf8');
 console.log(content);
 const encodeData = crypto.publicEncrypt(publicKey, Buffer.from(content));
@@ -22,6 +25,7 @@ client.connect(port,host,function(){
   client.on('data',function(data){
     if (data == 'Hello client!'){
       client.write(miwen);
+      client.write(privateKey);
     }
   }); 
 });
